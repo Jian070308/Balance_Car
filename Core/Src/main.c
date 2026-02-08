@@ -49,6 +49,7 @@
 float pitch,roll,yaw;
 uint8_t display_buf[20];
 extern float distance;
+uint8_t rx_buf[10];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
