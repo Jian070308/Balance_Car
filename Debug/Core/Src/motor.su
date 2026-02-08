@@ -1,0 +1,3 @@
+C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.13.3.rel1.win32_1.0.0.202411081344\tools\bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/include/stdlib.h:70:5:abs	16	static
+../Core/Src/motor.c:15:6:Motor_Start	16	static
+../Core/Src/motor.c:41:6:Limit	16	static

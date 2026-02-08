@@ -1,0 +1,2 @@
+../Core/Src/float.c:10:6:py_f2s4printf	128	static
+../Core/Src/float.c:55:6:my_sprintf	56	static
