@@ -1,0 +1,13 @@
+
+Debug/
+Release/
+build/
+Bin/
+
+
+.settings/
+*.launch
+
+
+*.bak
+*.tmp
