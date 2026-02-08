@@ -1,4 +1,0 @@
-../Core/Src/pid.c:31:5:Vertical	40	static
-../Core/Src/pid.c:39:5:Speed	48	static
-../Core/Src/pid.c:66:5:Turn	32	static
-../Core/Src/pid.c:73:6:Control	24	static
