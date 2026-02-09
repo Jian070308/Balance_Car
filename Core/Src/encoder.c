@@ -15,6 +15,12 @@ int Read_Encoder(TIM_HandleTypeDef *htim){
 }
 
 void Read_Speed() {
+#ifdef GET_SPEED_FOR_PID
+
+        g_motor_data.speed_left = ((float)Read_Encoder(&htim2) * f * 60) / (my_times * PPR * Ratio);
+        g_motor_data.speed_right = -((float)Read_Encoder(&htim4) * f * 60) / (my_times * PPR * Ratio);
+
+#else
     uint32_t current_tick = uwTick;
     uint32_t delta_time = current_tick - sys_tick; // 计算实际经过了多少毫秒
 
@@ -27,9 +33,10 @@ void Read_Speed() {
         float real_f = 1000.0f / (float)delta_time;
 
         // 把公式里的 f 换成 real_f
-        speed_left = ((float)Read_Encoder(&htim2) * real_f * 60) / (my_times * PPR * Ratio);
-        speed_right = -((float)Read_Encoder(&htim4) * real_f * 60) / (my_times * PPR * Ratio);
+        g_motor_data.speed_left = ((float)Read_Encoder(&htim2) * real_f * 60) / (my_times * PPR * Ratio);
+        g_motor_data.speed_right = -((float)Read_Encoder(&htim4) * real_f * 60) / (my_times * PPR * Ratio);
     }
+#endif
 }
 
 

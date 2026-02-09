@@ -52,6 +52,8 @@ extern "C" {
 #include "motor.h"
 #include "encoder.h"
 #include "pid.h"
+#include "debug.h"
+#include "standard_PID.h"
 
 /* USER CODE END Includes */
 
@@ -77,6 +79,8 @@ typedef enum{
 /* USER CODE BEGIN EM */
 #define PRINT(X,Y) my_sprintf((char *)display_buf,""#X":",X,1);\
                  OLED_PrintString(0, Y, (char *)display_buf, &font16x16,OLED_COLOR_NORMAL);
+
+
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

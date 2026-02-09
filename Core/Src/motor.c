@@ -12,7 +12,7 @@ int abs(int p)
 		return -p;
 }
 
-void Motor_Start(int moto1,int moto2)			//-100~100
+void Motor_Start(int8_t moto1,int8_t moto2)			//-100~100
 {
 	if(moto1>0)
 	{
@@ -38,7 +38,7 @@ void Motor_Start(int moto1,int moto2)			//-100~100
 	__HAL_TIM_SetCompare(&htim1,TIM_CHANNEL_1,abs(moto2));
 }
 
-void Limit(int *motoA,int *motoB)
+void Limit(int8_t *motoA,int8_t *motoB)
 {
 	if(*motoA>PWM_MAX)*motoA=PWM_MAX;
 	if(*motoA<PWM_MIN)*motoA=PWM_MIN;

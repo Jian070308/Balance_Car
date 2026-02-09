@@ -46,7 +46,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-float pitch,roll,yaw;
+
 uint8_t display_buf[20];
 extern float distance;
 uint8_t rx_buf[10];
@@ -118,6 +118,17 @@ int main(void)
   /* USER CODE BEGIN 2 */
   Project_Init();
 
+#if DEBUG_ENABLE                            /* 开启调试 */
+
+    debug_init();                           /* 初始化调试 */
+    debug_send_motorcode(DC_MOTOR);         /* 上传电机类型（直流有刷电机） */
+    debug_send_motorstate(IDLE_STATE);      /* 上传电机状态（空闲） */
+
+    /* 同步数据PID参数到上位机 ，无论同步哪一组数据，目标值地址只能是外环PID的 */
+    debug_send_initdata(TYPE_PID1, (float *)(&g_speed_pid.SetPoint), L_KP, L_KI, L_KD);  /* 位置环PID参数（PID1）*/
+    debug_send_initdata(TYPE_PID2, (float *)(&g_speed_pid.SetPoint), S_KP, S_KI, S_KD);  /* 速度环PID参数（PID2）*/
+
+#endif
 
   /* USER CODE END 2 */
 
@@ -127,6 +138,7 @@ int main(void)
   {
       //读取数据
       mpu_dmp_get_data(&pitch, &roll, &yaw);
+
       Get_Distance();
 
       //显示数据
@@ -192,10 +204,14 @@ void Project_Init(){
       HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
       HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
       HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
+      __HAL_TIM_SET_COUNTER(&htim2,0);
       HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
+      __HAL_TIM_SET_COUNTER(&htim4,0);
 
       HAL_UART_Receive_IT(&huart3, rx_buf, 1);
       HAL_UART_Transmit(&huart3, (uint8_t *)"Hello world!\r\n", 13, 1000);
+
+      debug_init();
 }
 
 void OLED_PRINT(){

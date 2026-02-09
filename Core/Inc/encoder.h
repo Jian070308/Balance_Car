@@ -1,9 +1,12 @@
 #ifndef INC_ENCODER_H_
 #define INC_ENCODER_H_
 
+#define f 100
 #define my_times 4
 #define PPR 11
 #define Ratio 30
+
+#define GET_SPEED_FOR_PID 1
 
 extern float speed_left,speed_right;
 
