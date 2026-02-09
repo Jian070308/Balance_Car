@@ -117,14 +117,14 @@ int main(void)
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
   Project_Init();
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-      HAL_Delay(50);
-
       //读取数据
       mpu_dmp_get_data(&pitch, &roll, &yaw);
       Get_Distance();
@@ -196,8 +196,6 @@ void Project_Init(){
 
       HAL_UART_Receive_IT(&huart3, rx_buf, 1);
       HAL_UART_Transmit(&huart3, (uint8_t *)"Hello world!\r\n", 13, 1000);
-
-
 }
 
 void OLED_PRINT(){

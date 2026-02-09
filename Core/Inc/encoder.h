@@ -1,10 +1,12 @@
 #ifndef INC_ENCODER_H_
 #define INC_ENCODER_H_
 
-#define f 100
 #define my_times 4
 #define PPR 11
 #define Ratio 30
+
+extern float speed_left,speed_right;
+
 
 #include "stm32f1xx_hal.h"
 #include "main.h"
