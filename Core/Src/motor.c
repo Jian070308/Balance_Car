@@ -1,17 +1,5 @@
 #include "motor.h"
 
-#define PWM_MAX 100
-#define PWM_MIN -100
-extern TIM_HandleTypeDef htim1;
-
-int abs(int p)
-{
-	if(p>0)
-		return p;
-	else
-		return -p;
-}
-
 void Motor_Start(int8_t moto1,int8_t moto2)			//-100~100
 {
 	if(moto1>0)

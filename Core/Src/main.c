@@ -46,10 +46,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
 uint8_t display_buf[20];
-extern float distance;
 uint8_t rx_buf[10];
+uint8_t res=0;
+uint8_t a=1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -62,20 +62,10 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart == &huart3){
-		switch(rx_buf[0]){
-			case 0x00:
-				break;
-			case 0x01:
-				break;
-			case 0x03:
-				break;
-			case 0x05:
-				break;
-			case 0x07:
-				break;
-		}
 
-		HAL_UART_Receive_IT(huart, (uint8_t *)rx_buf, 1);
+		debug_handle(&res);
+
+		HAL_UART_Receive_IT(huart, &res, 1);
 	}
 }
 /* USER CODE END 0 */
@@ -120,13 +110,12 @@ int main(void)
 
 #if DEBUG_ENABLE                            /* 开启调试 */
 
-    debug_init();                           /* 初始化调试 */
-    debug_send_motorcode(DC_MOTOR);         /* 上传电机类型（直流有刷电机） */
-    debug_send_motorstate(IDLE_STATE);      /* 上传电机状态（空闲） */
+  debug_send_motorcode(DC_MOTOR);         /* 上传电机类型（直流有刷电机） */
+  debug_send_motorstate(RUN_STATE);      /* 上传电机状态（空闲） */
 
-    /* 同步数据PID参数到上位机 ，无论同步哪一组数据，目标值地址只能是外环PID的 */
-    debug_send_initdata(TYPE_PID1, (float *)(&g_speed_pid.SetPoint), L_KP, L_KI, L_KD);  /* 位置环PID参数（PID1）*/
-    debug_send_initdata(TYPE_PID2, (float *)(&g_speed_pid.SetPoint), S_KP, S_KI, S_KD);  /* 速度环PID参数（PID2）*/
+  /* 同步数据PID参数到上位机 ，无论同步哪一组数据，目标值地址只能是外环PID的 */
+  debug_send_initdata(TYPE_PID1, (float *)(&g_speed_pid.SetPoint), A_KP, A_KI, A_KD);  /* 位置环PID参数（PID1）*/
+  debug_send_initdata(TYPE_PID2, (float *)(&g_speed_pid.SetPoint), S_KP, S_KI, S_KD);  /* 速度环PID参数（PID2）*/
 
 #endif
 
@@ -136,13 +125,31 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-      //读取数据
+	  if(pid_flag==1){
+		  Control();
+		  pid_flag=0;
+	  }
+
+
+#if DEBUG_ENABLE
+
+        /* 接收PID助手设置的直立环PID参数 */
+        debug_receive_pid(TYPE_PID1, (float *)&g_angle_pid.Proportion,(float *)&g_angle_pid.Integral, (float *)&g_angle_pid.Derivative);
+
+        /* 接收PID助手设置的速度环PID参数 */
+        debug_receive_pid(TYPE_PID2, (float *)&g_speed_pid.Proportion, (float *)&g_speed_pid.Integral, (float *)&g_speed_pid.Derivative);
+
+#endif
+
+
+      /*读取数据*/
       mpu_dmp_get_data(&pitch, &roll, &yaw);
 
       Get_Distance();
 
       //显示数据
       OLED_PRINT();
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -197,6 +204,9 @@ void Project_Init(){
       MPU_Init();
       mpu_dmp_init();
 
+      pid_init();
+      debug_init();
+
       //确保初始化完成后再开启中断
       HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
       HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
@@ -208,10 +218,10 @@ void Project_Init(){
       HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
       __HAL_TIM_SET_COUNTER(&htim4,0);
 
-      HAL_UART_Receive_IT(&huart3, rx_buf, 1);
-      HAL_UART_Transmit(&huart3, (uint8_t *)"Hello world!\r\n", 13, 1000);
+      HAL_UART_Receive_IT(&huart3, &res, 1);
 
-      debug_init();
+
+
 }
 
 void OLED_PRINT(){

@@ -39,19 +39,17 @@ extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "IIC.h"
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h"
 #include "mpu6050.h"
-#include "string.h"
-#include "stdio.h"
-#include "string.h"
 #include "oled.h"
 #include "sr04.h"
 #include "float.h"
 #include "motor.h"
 #include "encoder.h"
-#include "pid.h"
 #include "debug.h"
 #include "standard_PID.h"
 
@@ -77,7 +75,7 @@ typedef enum{
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define PRINT(X,Y) my_sprintf((char *)display_buf,""#X":",X,1);\
+#define PRINT(X,Y) my_sprintf((char *)display_buf,""":",X,1);\
                  OLED_PrintString(0, Y, (char *)display_buf, &font16x16,OLED_COLOR_NORMAL);
 
 

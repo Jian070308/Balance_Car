@@ -1,8 +1,8 @@
 #include "sr04.h"
 
-extern TIM_HandleTypeDef htim3;
-uint16_t count;
+static uint16_t count;
 float distance;
+__IO uint8_t pid_flag=0;
 
 void Delay_us(uint32_t nus)
 {
@@ -33,7 +33,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		}
 	}
 	else if(GPIO_Pin == GPIO_PIN_5){
-		Control();
+		pid_flag=1;
 	}
 
 }

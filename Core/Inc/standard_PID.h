@@ -6,9 +6,9 @@
 /* 注意：双环控制的时候，外环PID参数调节幅度不要太大，这对于整个曲线的影响很大 */
 
 /* 定义位置环（内环）PID参数相关宏 */
-#define  L_KP      0.00f             /* P参数 */
-#define  L_KI      0.00f             /* I参数 */
-#define  L_KD      0.00f             /* D参数 */
+#define  A_KP      1                 /* P参数 */
+#define  A_KI      0.00f             /* I参数 */
+#define  A_KD      0.00f             /* D参数 */
 
 /* 定义速度环（外环）PID参数相关宏 */
 #define  S_KP      0.00f             /* P参数 */
@@ -16,7 +16,7 @@
 #define  S_KD      0.00f             /* D参数 */
 
 /*     定义机械中值    */
-#define  MED_ANGLE 0.0f
+#define  MED_ANGLE 0.5f
 
 /* PID结构体 */
 typedef struct
@@ -44,9 +44,9 @@ typedef struct
     __IO float  Derivative;          /* 微分常数 D */
     __IO int    ActualValue;         /* 期望输出值 */
 
-}PID_LOCATION;
+}PID_ANGLE;
 
-extern PID_LOCATION  g_location_pid;  /* 位置环PID参数结构体 */
+extern PID_ANGLE  g_angle_pid;  /* 位置环PID参数结构体 */
 
 /* 电机参数结构体 */
 typedef struct
@@ -54,6 +54,7 @@ typedef struct
   uint8_t state;          /*电机状态*/
   float speed_left;       /*左电机实际速度*/
   float speed_right; 	  /*右电机实际速度*/
+  float speed_car;        /*小车速度*/
   float MedAngle;         /*机械中值*/
   int8_t  pwm_left;       /*左电机比较值 */
   int8_t  pwm_right;      /*右电机比较值 */
@@ -66,6 +67,8 @@ extern float pitch, roll, yaw;				//角度值
 extern short gyro_x,gyro_y,gyro_z;          //角速度
 
 void pid_init();
-
+int Vertical();
+float Speed();
+void Control();
 
 #endif /* INC_STANDARD_PID_H_ */

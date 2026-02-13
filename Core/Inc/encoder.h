@@ -8,10 +8,6 @@
 
 #define GET_SPEED_FOR_PID 1
 
-extern float speed_left,speed_right;
-
-
-#include "stm32f1xx_hal.h"
 #include "main.h"
 
 int Read_Encoder(TIM_HandleTypeDef *htim);

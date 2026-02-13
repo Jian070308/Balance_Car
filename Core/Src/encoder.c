@@ -1,11 +1,6 @@
 #include "encoder.h"
 
 uint32_t sys_tick=0;
-extern __IO uint32_t uwTick;
-extern TIM_HandleTypeDef htim2;
-extern TIM_HandleTypeDef htim4;
-float speed_left,speed_right;
-
 
 int Read_Encoder(TIM_HandleTypeDef *htim){
 	int coder = 0;
@@ -19,6 +14,7 @@ void Read_Speed() {
 
         g_motor_data.speed_left = ((float)Read_Encoder(&htim2) * f * 60) / (my_times * PPR * Ratio);
         g_motor_data.speed_right = -((float)Read_Encoder(&htim4) * f * 60) / (my_times * PPR * Ratio);
+        g_motor_data.speed_car = (g_motor_data.speed_left+g_motor_data.speed_right)/2;
 
 #else
     uint32_t current_tick = uwTick;
