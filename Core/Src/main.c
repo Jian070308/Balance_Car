@@ -111,7 +111,7 @@ int main(void)
 #if DEBUG_ENABLE                            /* 开启调试 */
 
   debug_send_motorcode(DC_MOTOR);         /* 上传电机类型（直流有刷电机） */
-  debug_send_motorstate(RUN_STATE);      /* 上传电机状态（空闲） */
+  debug_send_motorstate(RUN_STATE);       /* 上传电机状态（空闲） */
 
   /* 同步数据PID参数到上位机 ，无论同步哪一组数据，目标值地址只能是外环PID的 */
   debug_send_initdata(TYPE_PID1, (float *)(&g_speed_pid.SetPoint), A_KP, A_KI, A_KD);  /* 位置环PID参数（PID1）*/
@@ -125,11 +125,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if(pid_flag==1){
+	  if(a_pid_flag==1){
 		  Control();
-		  pid_flag=0;
+		  a_pid_flag=0;
 	  }
-
 
 #if DEBUG_ENABLE
 
@@ -227,10 +226,10 @@ void Project_Init(){
 void OLED_PRINT(){
       OLED_NewFrame();
 
-      PRINT(pitch,1);
-      PRINT(roll,17);
-      PRINT(yaw,33);
-      PRINT(distance,48);
+      PRINT(roll,1);
+      PRINT(g_motor_data.speed_left,17);
+      PRINT(g_motor_data.speed_left,33);
+      PRINT(g_speed_pid.ActualValue,48);
 
       OLED_ShowFrame();
 }

@@ -1,6 +1,6 @@
 #include "motor.h"
 
-void Motor_Start(int8_t moto1,int8_t moto2)			//-100~100
+void Motor_Start(int moto1,int moto2)			//-7200~7200
 {
 	if(moto1>0)
 	{
@@ -26,7 +26,7 @@ void Motor_Start(int8_t moto1,int8_t moto2)			//-100~100
 	__HAL_TIM_SetCompare(&htim1,TIM_CHANNEL_1,abs(moto2));
 }
 
-void Limit(int8_t *motoA,int8_t *motoB)
+void Limit(int *motoA,int *motoB)
 {
 	if(*motoA>PWM_MAX)*motoA=PWM_MAX;
 	if(*motoA<PWM_MIN)*motoA=PWM_MIN;

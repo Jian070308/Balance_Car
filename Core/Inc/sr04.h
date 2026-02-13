@@ -4,7 +4,8 @@
 #include "main.h"
 
 extern float distance;
-extern __IO uint8_t pid_flag;
+extern __IO uint8_t a_pid_flag;
+extern __IO uint8_t s_pid_flag;
 
 void Get_Distance();
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);

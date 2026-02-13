@@ -1,8 +1,11 @@
 #include "sr04.h"
 
-static uint16_t count;
+static uint16_t count=0;
+static uint8_t time=0;
 float distance;
-__IO uint8_t pid_flag=0;
+__IO uint8_t a_pid_flag=0;        //直立环触发标志
+__IO uint8_t s_pid_flag=0;        //速度环触发标志
+
 
 void Delay_us(uint32_t nus)
 {
@@ -33,7 +36,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 		}
 	}
 	else if(GPIO_Pin == GPIO_PIN_5){
-		pid_flag=1;
+		a_pid_flag=1;
+		time++;
+		if(time==5){
+			s_pid_flag=1;
+			time=0;
+		}
 	}
 
 }

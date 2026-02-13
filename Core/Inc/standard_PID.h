@@ -6,17 +6,21 @@
 /* 注意：双环控制的时候，外环PID参数调节幅度不要太大，这对于整个曲线的影响很大 */
 
 /* 定义位置环（内环）PID参数相关宏 */
-#define  A_KP      1                 /* P参数 */
-#define  A_KI      0.00f             /* I参数 */
-#define  A_KD      0.00f             /* D参数 */
+#define  A_KP      84               /* P参数 */        //300-600
+#define  A_KI      0                /* I参数 */
+#define  A_KD      0.6              /* D参数 */		   //1-5
 
 /* 定义速度环（外环）PID参数相关宏 */
-#define  S_KP      0.00f             /* P参数 */
-#define  S_KI      0.00f             /* I参数 */
+#define  S_KP      -0.015f             /* P参数 */		   //0.01-0.08
+#define  S_KI      -0.00008f             /* I参数 */
 #define  S_KD      0.00f             /* D参数 */
 
 /*     定义机械中值    */
-#define  MED_ANGLE 0.5f
+#define  MED_ANGLE      0.5f
+
+/*     电机死区补偿值    */
+#define  COMPENSATION   100
+
 
 /* PID结构体 */
 typedef struct
@@ -51,13 +55,15 @@ extern PID_ANGLE  g_angle_pid;  /* 位置环PID参数结构体 */
 /* 电机参数结构体 */
 typedef struct
 {
-  uint8_t state;          /*电机状态*/
   float speed_left;       /*左电机实际速度*/
   float speed_right; 	  /*右电机实际速度*/
   float speed_car;        /*小车速度*/
   float MedAngle;         /*机械中值*/
-  int8_t  pwm_left;       /*左电机比较值 */
-  int8_t  pwm_right;      /*右电机比较值 */
+  uint8_t state;          /*电机状态*/
+  int compensation;       /*死区补偿*/
+  int  pwm_left;          /*左电机比较值 */
+  int  pwm_right;         /*右电机比较值 */
+
 } Motor_DATA;
 
 extern Motor_DATA  g_motor_data;  /*电机参数变量*/

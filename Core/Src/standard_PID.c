@@ -19,8 +19,6 @@ void pid_init()
 	g_angle_pid.Integral = A_KI;      /* 积分常数 Proportional */
 	g_angle_pid.Derivative = A_KD;    /* 微分常数 Derivative   */
 
-
-
     /* 初始化速度环PID参数 */
     g_speed_pid.SetPoint = 0.0;          /* 目标值 */
     g_speed_pid.ActualValue = 0.0;       /* 期望输出值 */
@@ -32,8 +30,8 @@ void pid_init()
     g_speed_pid.Integral = S_KI;         /* 积分常数 Integral      */
     g_speed_pid.Derivative = S_KD;       /* 微分常数 Integral      */
 
-
     g_motor_data.MedAngle=MED_ANGLE;
+    g_motor_data.compensation=COMPENSATION;
 }
 
 //直立环PD控制器
@@ -66,7 +64,7 @@ float Speed(){
 	//6.速度环
 	float temp =g_speed_pid.Proportion*g_speed_pid.ErrorLowout+g_speed_pid.Integral*g_speed_pid.SumError;
 
-	g_speed_pid.ActualValue=((temp>30)?30:(temp<-30?-30:temp));   //限制角度在-30到30
+	g_speed_pid.ActualValue=((temp>20)?20:(temp<-20?-20:temp));   //限制角度在-30到30
 
 	return g_speed_pid.ActualValue;
 }
@@ -78,19 +76,23 @@ void Control(){
 	mpu_dmp_get_data(&pitch, &roll, &yaw);
 	MPU_Get_Gyroscope(&gyro_x, &gyro_y, &gyro_z);
 
-	//外环速度环-->输出值传给内环
-	g_angle_pid.SetPoint=Speed()+g_motor_data.MedAngle;
+	//外环周期为内环周期的五倍
+	if(s_pid_flag==1){
+		//外环速度环-->输出值传给内环
+		g_angle_pid.SetPoint=Speed()+g_motor_data.MedAngle;
+		s_pid_flag=0;
+	}
 
 	//接收外环目标值，并直接输出占空比
 	g_motor_data.pwm_left=Vertical();
 
-
 	//暂未加入转向环
 
+	//死区补偿
 	if(g_motor_data.pwm_left>0){
-		g_motor_data.pwm_left+=4;
+		g_motor_data.pwm_left+=g_motor_data.compensation;
 	}else if(g_motor_data.pwm_left<0){
-		g_motor_data.pwm_left-=4;
+		g_motor_data.pwm_left-=g_motor_data.compensation;
 	}
 
 	g_motor_data.pwm_right=g_motor_data.pwm_left;
@@ -100,10 +102,10 @@ void Control(){
 
 #if DEBUG_ENABLE  /* 发送基本参数*/
 
-	debug_send_wave_data( 1 ,roll);            					/* 选择通道1，发送实际速度（波形显示）*/
-    debug_send_wave_data( 3 ,g_motor_data.speed_car);            /* 选择通道1，发送实际速度（波形显示）*/
-    debug_send_wave_data( 2 ,g_motor_data.MedAngle);            /* 选择通道1，发送实际速度（波形显示）*/
-    debug_send_wave_data( 4 ,g_speed_pid.SetPoint);               /* 选择通道2，发送目标速度（波形显示）*/
+	debug_send_wave_data( 1 ,roll);            					 /* 选择通道1，发送实际角度（波形显示）*/
+	debug_send_wave_data( 2 ,g_motor_data.MedAngle);             /* 选择通道2，发送机械中值（波形显示）*/
+    debug_send_wave_data( 3 ,g_motor_data.speed_car);            /* 选择通道3，发送实际速度（波形显示）*/
+    debug_send_wave_data( 4 ,g_speed_pid.SetPoint);              /* 选择通道4，发送目标速度（波形显示）*/
 
 #endif
 }

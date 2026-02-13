@@ -3,10 +3,11 @@
 
 #include "main.h"
 
-#define PWM_MAX 100
-#define PWM_MIN -100
+//预留一点余量
+#define PWM_MAX 7100
+#define PWM_MIN -7100
 
-void Motor_Start(int8_t moto1,int8_t moto2);
-void Limit(int8_t *motor1,int8_t *motor2);
+void Motor_Start(int moto1,int moto2);
+void Limit(int *motor1,int *motor2);
 
 #endif /* INC_MOTOR_H_ */
